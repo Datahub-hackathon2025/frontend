@@ -35,7 +35,25 @@ mymap.whenReady(function() {
 });
 */
 
+function start_polling( sensorid, graph, func_callback ) {
+  $.get({url:"/api/points/", data:("sensor="+sensorid), success:function( data ) {
+    var point = data[data.length-1]["value"];
+    var label = data[data.length-1]["datetime"].slice(11,19);
+    if(graph) {
+      graph.data.labels.push(label);
+      graph.data.datasets[0].data.push(point);
+      graph.update();
+    }
+
+    setTimeout(function() {
+    if (polling) {
+      func_callback( sensorid, chart, func_callback );
+    }
+  }, 3000);
+  }});
+}
 var checkboxes = document.getElementsByTagName('input');
+var polling = 0;
 
 for (var i=0; i<checkboxes.length; i++)  {
   if (checkboxes[i].type == 'checkbox')   {
@@ -44,10 +62,13 @@ for (var i=0; i<checkboxes.length; i++)  {
 }
 var chart = 0;
 function renderChart( sensorid, name ) {
+  polling = 0;
+  $("#chart-well").css({"display":"block"});
   if (chart) {
     chart.destroy();
   }
   var ctx = document.getElementById("chart").getContext('2d');
+  console.log("debug");
   $.get({url:"/api/points/", data:("sensor="+sensorid), success:function( data ) {
     var points = [];
     var labels = [];
@@ -73,6 +94,10 @@ function renderChart( sensorid, name ) {
       options: {}
     });
   }});
+  polling = 1;
+  setTimeout(function() {
+  start_polling(sensorid, chart, start_polling);
+}, 3000);
 }
 
 var sensors = []
@@ -117,13 +142,13 @@ function makeHeatMap(points) {
     let max_current_value = points[0]['current_value']['value'];
 
     for (const point of points){
-        if (point['current_value']) { 
+        if (point['current_value']) {
             max_current_value = Math.max(point['current_value']['value'], max_current_value)
         }
     }
 
     for (const point of points){
-        if (point['current_value']) { 
+        if (point['current_value']) {
             heatmap_points.push([point['latitude'], point['longitude'], point['current_value']['value']/(max_current_value+0.0001)])
         }
     }
@@ -137,7 +162,7 @@ function getSensorsOfType(sensors, type){
     for (const point of sensors){
         if (point['sensor_type'] === type){
             filtered.push(point)
-        } 
+        }
     }
     return filtered;
 }
