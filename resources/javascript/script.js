@@ -43,6 +43,29 @@ for (var i=0; i<checkboxes.length; i++)  {
   }
 }
 
+function renderChart( id, name ) {
+  var ctx = document.getElementById("chart").getContext('2d');
+  $.get("/api/points/"+id, function( data ) {
+    var chart = new Chart(ctx, {
+      type: 'line',
+
+      // The data for our dataset
+      data: {
+          labels: ["January", "February", "March", "April", "May", "June", "July"],
+          datasets: [{
+              label: name,
+              backgroundColor: 'rgb(00, 158, 219)',
+              borderColor: 'rgb(50, 75, 154)',
+              data: [0, 10, 5, 2, 20, 30, 45],
+          }]
+      },
+
+      // Configuration options go here
+      options: {}
+    });
+  });
+}
+
 var markers = []
 function getSensors(elem) {
   if (elem.checked) {
@@ -64,6 +87,7 @@ function getSensors(elem) {
         var marker = L.marker([sensor["latitude"], sensor["longitude"]]).addTo(mymap).setIcon(icons[sensor["sensor_type"]]);
         var popupContent = sensor["name"];
         marker.bindPopup(popupContent);
+        marker.on("click", function () { renderChart(sensor["pk"], sensor["name"]) });
         markers.push(marker);
       }
     }})
