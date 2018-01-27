@@ -5,3 +5,9 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     id: 'mapbox.streets',
     accessToken: 'pk.eyJ1IjoiZGV2c2FndWwiLCJhIjoiY2pjd2RhMzl0MGdhaDMzcW82eGx1amNpayJ9.9CJ5rqAdw90_Tf9FKj-XBw'
 }).addTo(mymap);
+
+function getSensors() {
+  var jqxhr = $.get(document.location.host + "/api/sensors/", function( data ) {
+    alert( "Data Loaded: " + data );
+  });
+}
