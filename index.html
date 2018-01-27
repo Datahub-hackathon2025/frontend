@@ -51,7 +51,12 @@
                 <li><input type="checkbox" name="pollution" value="pollution" id="pollution" onclick="getSensors(this)"><label for="pollution">загрязнение</label></li>
               </ul>
              </form>
+             <button class='btn btn-primary' onclick="togglePollutionMap()">Карта загрязнения</button>
             </div>
+            
+        </div>
+
+        <div id="chart-well" class="well well-sm">
             <canvas id="chart" style="background-color:white"></canvas>
         </div>
 

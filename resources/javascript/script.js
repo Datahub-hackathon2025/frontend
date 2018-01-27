@@ -112,14 +112,18 @@ function makeHeatMap(points) {
     let max_current_value = points[0]['current_value']['value'];
 
     for (const point of points){
-        max_current_value = Math.max(point['current_value']['value'], max_current_value)
+        if (point['current_value']) { 
+            max_current_value = Math.max(point['current_value']['value'], max_current_value)
+        }
     }
 
     for (const point of points){
-        heatmap_points.push([point['latitude'], point['longitude'], point['current_value']['value']/max_current_value*10])
+        if (point['current_value']) { 
+            heatmap_points.push([point['latitude'], point['longitude'], point['current_value']['value']/(max_current_value+0.0001)])
+        }
     }
 
-    const heat = L.heatLayer(heatmap_points, {radius: 100})
+    const heat = L.heatLayer(heatmap_points, {radius: 150, blur:10})
     return heat;
 }
 
@@ -144,5 +148,14 @@ function drawPollutionHeatMap(map, markers) {
 function removePollutionHeatMap() {
     if (heatmap_layer){
         mymap.removeLayer(heatmap_layer);
+        heatmap_layer = null;
+    }
+}
+
+function togglePollutionMap() {
+    if (heatmap_layer) {
+        removePollutionHeatMap();
+    } else {
+        drawPollutionHeatMap();
     }
 }
