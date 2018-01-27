@@ -37,7 +37,7 @@ mymap.whenReady(function() {
 
 function sortByDate( arr ) {
     return arr.sort(
-        function(a, b){ 
+        function(a, b){
             if (a['datetime'] < b['datetime']) {
                 return -1;
             }
@@ -45,7 +45,7 @@ function sortByDate( arr ) {
                 return 1;
             }
             return 0;
-        });   
+        });
 }
 function poll( sensorid, graph ) {
   $.get({url:"/api/points/", data:("sensor="+sensorid), success:function( data ) {
@@ -109,10 +109,11 @@ function renderChart( sensorid, name ) {
     });
 
       setTimeout(function() {
+        polling = 1;
         poll(sensorid, chart);
         }, 3000);
       $("#chart-well").css({"display":"block"});
-  
+
   }});
 
 }
