@@ -2,7 +2,7 @@ var sensorTypes = []
 
 var mymap = L.map('map', {
     minZoom: 10,
-    maxZoom: 15
+    maxZoom: 12
 })
 
 mymap.setView([56.835, 60.612], 13);
@@ -186,8 +186,7 @@ function makeHeatMap(points) {
             heatmap_points.push([point['latitude'], point['longitude'], point['current_value']['value']/(0.05*max_current_value+0.0001)])
         }
     }
-    console.log(heatmap_points)
-    const heat = L.heatLayer(heatmap_points, {radius: 150, blur: 50, max: 1.5})
+    const heat = L.heatLayer(heatmap_points, {radius: 150, blur: 50, max: 1.5, maxZoom: 16})
     return heat;
 }
 
@@ -205,7 +204,6 @@ let heatmap_layer = null;
 function drawPollutionHeatMap(map, markers) {
     removePollutionHeatMap()
     const pollution_sensors = getSensorsOfType(sensors, 'pollution');
-    console.log(pollution_sensors);
     if (pollution_sensors && pollution_sensors.length !== 0) {
         heatmap_layer = makeHeatMap(pollution_sensors);
         mymap.addLayer(heatmap_layer);
