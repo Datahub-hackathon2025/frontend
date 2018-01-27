@@ -15,6 +15,7 @@ var icons = {
   water: L.icon({iconUrl: './resources/icon/Dwater.png', iconSize: [50, 25]})
 };
 
+/*
 mymap.whenReady(function() {
   $.get("/api/sensors/", function( data ) {
     var sensors = $.map(data, function(el) {return el});
@@ -30,3 +31,4 @@ mymap.whenReady(function() {
     alert( "error" );
   })
 });
+*/

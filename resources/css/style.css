@@ -5,6 +5,29 @@ h1 {
   margin-top: 0.25em;
 }
 
+h2 {
+  color: white;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 4rem;
+  margin: 0.25em 0;
+}
+
+li {
+  color: white;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 1rem;
+  margin-top: 0.2rem;
+  padding: 0.2rem 0;
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+
+label {
+  padding: 0.1rem 0.5rem;
+  line-height: 1.2;
+}
+
 #main {
   padding: 0;
 }
@@ -17,4 +40,9 @@ h1 {
 #sidebar {
   background-color: #AC2189;
   height: 100vh;
+}
+
+#data {
+  background-color: white;
+  width: 100%;
 }
