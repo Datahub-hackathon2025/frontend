@@ -167,11 +167,11 @@ function makeHeatMap(points) {
 
     for (const point of points){
         if (point['current_value']) {
-            heatmap_points.push([point['latitude'], point['longitude'], point['current_value']['value']/(max_current_value+0.0001)])
+            heatmap_points.push([point['latitude'], point['longitude'], point['current_value']['value']/(0.05*max_current_value+0.0001)])
         }
     }
 
-    const heat = L.heatLayer(heatmap_points, {radius: 150, blur:10})
+    const heat = L.heatLayer(heatmap_points, {radius: 100, blur: 10})
     return heat;
 }
 
