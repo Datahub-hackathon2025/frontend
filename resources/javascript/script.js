@@ -49,7 +49,7 @@ function start_polling( sensorid, graph, func_callback ) {
     if (polling) {
       func_callback( sensorid, chart, func_callback );
     }
-  }, 3000);
+  }, 1500);
   }});
 }
 var checkboxes = document.getElementsByTagName('input');
@@ -171,8 +171,10 @@ let heatmap_layer = null;
 function drawPollutionHeatMap(map, markers) {
     removePollutionHeatMap()
     const pollution_sensors = getSensorsOfType(sensors, 'pollution');
-    heatmap_layer = makeHeatMap(pollution_sensors);
-    mymap.addLayer(heatmap_layer);
+    if (!pollution_sensors || pollution_sensors.length == 0) { 
+        heatmap_layer = makeHeatMap(pollution_sensors);
+        mymap.addLayer(heatmap_layer);
+    }
 }
 
 function removePollutionHeatMap() {
