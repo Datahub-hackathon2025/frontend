@@ -8,7 +8,13 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 
 mymap.whenReady(function() {
   $.get("/api/sensors/", function( data ) {
-    alert( "Data Loaded: " + data );
+    var sensors = $.map(data, function(el) {return el});
+    var sensorsLen = sensors.length;
+    console.log(sensorsLen);
+    for (var i = 0; i < sensorsLen; i++) {
+      console.log(sensors[i]);
+      L.marker([sensors[i]["latitude"], sensors[i]["longitude"]]).addTo(mymap);
+    }
   })
   .fail(function() {
     alert( "error" );
