@@ -47,27 +47,33 @@ function sortByDate( arr ) {
             return 0;
         });   
 }
+
 function poll( sensorid, graph ) {
+  clearTimeout(pollTimer);
   $.get({url:"/api/points/", data:("sensor="+sensorid), success:function( data ) {
     data = sortByDate(data);
 
     var point = data[data.length-1]["value"];
     var label = data[data.length-1]["datetime"].slice(11,19);
 
-    if(graph) {
+    if (graph && (graph.data.labels[graph.data.labels.length-1] < label)) {
       graph.data.labels.push(label);
       graph.data.datasets[0].data.push(point);
       graph.data.labels.shift();
       graph.data.datasets[0].data.shift();
       graph.update();
     }
-    setTimeout(function() {
-      if (polling) { poll( sensorid, chart ) }
-    }, 1500);
+    pollTimer = setTimeout(function() {
+      if (polling) { 
+        poll( sensorid, chart ) 
+      }
+    }, 2300);
 
   }});
 }
+
 var checkboxes = document.getElementsByTagName('input');
+var pollTimer = null;
 var polling = 0;
 
 for (var i=0; i<checkboxes.length; i++)  {
@@ -78,9 +84,7 @@ for (var i=0; i<checkboxes.length; i++)  {
 var chart = 0;
 function renderChart( sensorid, name ) {
   polling = 0;
-  if (chart) {
-    chart.destroy();
-  }
+  clearTimeout(pollTimer);
   var ctx = document.getElementById("chart").getContext('2d');
   $.get({url:"/api/points/", data:("sensor="+sensorid), success:function( data ) {
     var points = [];
@@ -91,30 +95,35 @@ function renderChart( sensorid, name ) {
       points.push(data[i]["value"]);
       labels.push(data[i]["datetime"].slice(11,19));
     }
+
+    if (chart) {
+      chart.destroy();
+    }
+
     chart = new Chart(ctx, {
       type: 'line',
       // The data for our dataset
       data: {
         labels: labels,
-          datasets: [{
-              label: name,
-              backgroundColor: 'rgb(00, 158, 219)',
-              borderColor: 'rgb(50, 75, 154)',
-              data: points
-          }]
+        datasets: [{
+          label: name,
+          backgroundColor: 'rgb(00, 158, 219)',
+          borderColor: 'rgb(50, 75, 154)',
+          data: points
+        }]
       },
 
       // Configuration options go here
       options: {}
     });
-
-      setTimeout(function() {
-        poll(sensorid, chart);
-        }, 3000);
-      $("#chart-well").css({"display":"block"});
-  
+    polling = 1;
+    $("#chart-well").css({"display":"block"});
+    
+    pollTimer =  setTimeout(function() {
+      poll( sensorid, chart ) 
+    }, 2500);
+    
   }});
-
 }
 
 var sensors = []
