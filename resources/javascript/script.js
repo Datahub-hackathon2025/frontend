@@ -42,28 +42,36 @@ for (var i=0; i<checkboxes.length; i++)  {
     checkboxes[i].checked = false;
   }
 }
+var chart = {};
 
-function renderChart( id, name ) {
+function renderChart( sensorid, name ) {
   var ctx = document.getElementById("chart").getContext('2d');
-  $.get("/api/points/"+id, function( data ) {
-    var chart = new Chart(ctx, {
+  $.get({url:"/api/points/", data:("sensor="+sensorid), success:function( data ) {
+    var points = [];
+    var labels = [];
+    data = data.slice(-10);
+    for (var i = 0; i < data.length; i++) {
+      points.push(data[i]["value"]);
+      labels.push(data[i]["datetime"].slice(11,19));
+    }
+    chart.destroy();
+    chart = new Chart(ctx, {
       type: 'line',
-
       // The data for our dataset
       data: {
-          labels: ["January", "February", "March", "April", "May", "June", "July"],
+        labels: labels,
           datasets: [{
               label: name,
               backgroundColor: 'rgb(00, 158, 219)',
               borderColor: 'rgb(50, 75, 154)',
-              data: [0, 10, 5, 2, 20, 30, 45],
+              data: points
           }]
       },
 
       // Configuration options go here
       options: {}
     });
-  });
+  }});
 }
 
 var markers = []
@@ -87,7 +95,8 @@ function getSensors(elem) {
         var marker = L.marker([sensor["latitude"], sensor["longitude"]]).addTo(mymap).setIcon(icons[sensor["sensor_type"]]);
         var popupContent = sensor["name"];
         marker.bindPopup(popupContent);
-        marker.on("click", function () { renderChart(sensor["pk"], sensor["name"]) });
+        marker.sensor = sensor;
+        marker.on("click", function (event) { renderChart(event.target.sensor["pk"], event.target.sensor["name"]) });
         markers.push(marker);
       }
     }})
