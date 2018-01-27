@@ -10,10 +10,11 @@ mymap.whenReady(function() {
   $.get("/api/sensors/", function( data ) {
     var sensors = $.map(data, function(el) {return el});
     var sensorsLen = sensors.length;
-    console.log(sensorsLen);
     for (var i = 0; i < sensorsLen; i++) {
-      console.log(sensors[i]);
-      L.marker([sensors[i]["latitude"], sensors[i]["longitude"]]).addTo(mymap);
+      var sensor = sensors[i];
+      var marker = L.marker([sensor["latitude"], sensor["longitude"]]).addTo(mymap);
+      var popupContent = sensor["name"];
+      marker.bindPopup(popupContent);
     }
   })
   .fail(function() {
