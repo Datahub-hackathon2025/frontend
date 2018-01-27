@@ -35,21 +35,38 @@ mymap.whenReady(function() {
 });
 */
 
-function start_polling( sensorid, graph, func_callback ) {
+function sortByDate( arr ) {
+    return arr.sort(
+        function(a, b){ 
+            if (a['datetime'] < b['datetime']) {
+                return -1;
+            }
+            if (a['datetime'] > b['datetime']) {
+                return 1;
+            }
+            return 0;
+        });   
+}
+function poll( sensorid, graph ) {
   $.get({url:"/api/points/", data:("sensor="+sensorid), success:function( data ) {
+    data = sortByDate(data);
+
     var point = data[data.length-1]["value"];
     var label = data[data.length-1]["datetime"].slice(11,19);
+
     if(graph) {
       graph.data.labels.push(label);
       graph.data.datasets[0].data.push(point);
+      
       graph.update();
     }
 
     setTimeout(function() {
-    if (polling) {
-      func_callback( sensorid, chart, func_callback );
-    }
-  }, 1500);
+        if (polling) {
+          //func_callback( sensorid, chart, func_callback );
+          poll( sensorid, chart )
+        }
+      }, 1500);
   }});
 }
 var checkboxes = document.getElementsByTagName('input');
@@ -72,6 +89,7 @@ function renderChart( sensorid, name ) {
   $.get({url:"/api/points/", data:("sensor="+sensorid), success:function( data ) {
     var points = [];
     var labels = [];
+    data = sortByDate(data);
     data = data.slice(-10);
     for (var i = 0; i < data.length; i++) {
       points.push(data[i]["value"]);
@@ -96,7 +114,7 @@ function renderChart( sensorid, name ) {
   }});
   polling = 1;
   setTimeout(function() {
-  start_polling(sensorid, chart, start_polling);
+  poll(sensorid, chart);
 }, 3000);
 }
 
