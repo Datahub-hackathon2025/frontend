@@ -104,5 +104,9 @@ function getSensors(elem) {
     .fail(function() {
       alert( "error" );
     })
+  } else {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].remove();
+    }
   }
 }
