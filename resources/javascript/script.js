@@ -57,16 +57,14 @@ function poll( sensorid, graph ) {
     if(graph) {
       graph.data.labels.push(label);
       graph.data.datasets[0].data.push(point);
-      
+      graph.data.labels.shift();
+      graph.data.datasets[0].data.shift();
       graph.update();
     }
-
     setTimeout(function() {
-        if (polling) {
-          //func_callback( sensorid, chart, func_callback );
-          poll( sensorid, chart )
-        }
-      }, 1500);
+      if (polling) { poll( sensorid, chart ) }
+    }, 1500);
+
   }});
 }
 var checkboxes = document.getElementsByTagName('input');
@@ -80,12 +78,10 @@ for (var i=0; i<checkboxes.length; i++)  {
 var chart = 0;
 function renderChart( sensorid, name ) {
   polling = 0;
-  $("#chart-well").css({"display":"block"});
   if (chart) {
     chart.destroy();
   }
   var ctx = document.getElementById("chart").getContext('2d');
-  console.log("debug");
   $.get({url:"/api/points/", data:("sensor="+sensorid), success:function( data ) {
     var points = [];
     var labels = [];
@@ -111,11 +107,14 @@ function renderChart( sensorid, name ) {
       // Configuration options go here
       options: {}
     });
+
+      setTimeout(function() {
+        poll(sensorid, chart);
+        }, 3000);
+      $("#chart-well").css({"display":"block"});
+  
   }});
-  polling = 1;
-  setTimeout(function() {
-  poll(sensorid, chart);
-}, 3000);
+
 }
 
 var sensors = []
@@ -189,7 +188,7 @@ let heatmap_layer = null;
 function drawPollutionHeatMap(map, markers) {
     removePollutionHeatMap()
     const pollution_sensors = getSensorsOfType(sensors, 'pollution');
-    if (!pollution_sensors || pollution_sensors.length == 0) { 
+    if (!pollution_sensors || pollution_sensors.length == 0) {
         heatmap_layer = makeHeatMap(pollution_sensors);
         mymap.addLayer(heatmap_layer);
     }
