@@ -1,3 +1,5 @@
+var sensorTypes = []
+
 var mymap = L.map('map').setView([56.835, 60.612], 13);
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -32,3 +34,35 @@ mymap.whenReady(function() {
   })
 });
 */
+
+var checkboxes = document.getElementsByTagName('input');
+
+for (var i=0; i<checkboxes.length; i++)  {
+  if (checkboxes[i].type == 'checkbox')   {
+    checkboxes[i].checked = false;
+  }
+}
+
+function getSensors(elem) {
+  if (elem.checked) {
+    sensorTypes.push(elem.name);
+  } else {
+    var index = sensorTypes.indexOf(elem.name);
+    sensorTypes.splice(index, 1);
+  }
+  if (sensorTypes.length > 0) {
+    $.get({url:"/api/sensors/", data:"types="+sensorTypes, success:function( data ) {
+      var sensors = $.map(data, function(el) {return el});
+      var sensorsLen = sensors.length;
+      for (var i = 0; i < sensorsLen; i++) {
+        var sensor = sensors[i];
+        var marker = L.marker([sensor["latitude"], sensor["longitude"]]).addTo(mymap).setIcon(icons[sensor["sensor_type"]]);
+        var popupContent = sensor["name"];
+        marker.bindPopup(popupContent);
+      }
+    }})
+    .fail(function() {
+      alert( "error" );
+    })
+  }
+}

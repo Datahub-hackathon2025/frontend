@@ -10,17 +10,19 @@ h2 {
   font-family: 'Source Sans Pro', sans-serif;
   font-size: 4rem;
   margin: 0.25em 0;
+  font-weight: 600;
 }
 
 li {
   color: white;
   font-family: 'Source Sans Pro', sans-serif;
-  font-size: 1rem;
+  font-size: 1.5rem;
   margin-top: 0.2rem;
   padding: 0.2rem 0;
   display: flex;
   align-items: center;
   align-content: center;
+  font-weight: 400;
 }
 
 label {

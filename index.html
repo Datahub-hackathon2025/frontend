@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>DataHub</title>
+    <title>Data Hub</title>
     <script
 			  src="https://code.jquery.com/jquery-3.3.1.js"
 			  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
@@ -25,23 +25,23 @@
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.44.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.0/mapbox-gl.css' rel='stylesheet' />
     <link href="https://fonts.googleapis.com/css?family=Alegreya:700" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:600" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" rel="stylesheet">
     <link rel="stylesheet" href="./resources/css/reset.css" />
     <link rel="stylesheet" href="./resources/css/style.css" />
   </head>
   <body>
     <div class="container-fluid" id="main">
       <div class="col-xs-3" id="sidebar">
-        <h1>DataHub</h1>
+        <h1>Data Hub</h1>
         <h2>Данные</h2>
         <form>
           <ul>
-            <li><input type="checkbox" name="temp" value="temp" id="temp"><label for="temp">температура</label></li>
-            <li><input type="checkbox" name="electricity" value="electricity" id="electricity"><label for="electricity">электричество</label></li>
-            <li><input type="checkbox" name="water" value="water" id="water"><label for="water">вода</label></li>
-            <li><input type="checkbox" name="street_light" value="street_light" id="street_light"><label for="street_light">уличное освещение</label></li>
-            <li><input type="checkbox" name="parking_lot" value="parking_lot" id="parking_lot"><label for="parking_lot">парковки</label></li>
-            <li><input type="checkbox" name="pollution" value="pollution" id="pollution"><label for="pollution">загрязнение</label></li>
+            <li><input type="checkbox" name="temp" value="temp" id="temp" onclick="getSensors(this)"><label for="temp">температура</label></li>
+            <li><input type="checkbox" name="electricity" value="electricity" id="electricity" onclick="getSensors(this)"><label for="electricity">электричество</label></li>
+            <li><input type="checkbox" name="water" value="water" id="water" onclick="getSensors(this)"><label for="water">вода</label></li>
+            <li><input type="checkbox" name="street_light" value="street_light" id="street_light" onclick="getSensors(this)"><label for="street_light">уличное освещение</label></li>
+            <li><input type="checkbox" name="parking_lot" value="parking_lot" id="parking_lot" onclick="getSensors(this)"><label for="parking_lot">парковки</label></li>
+            <li><input type="checkbox" name="pollution" value="pollution" id="pollution" onclick="getSensors(this)"><label for="pollution">загрязнение</label></li>
           </ul>
         </form>
         <div class="container" id="data">
