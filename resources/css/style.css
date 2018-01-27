@@ -1,3 +1,13 @@
+#main {
+  padding: 0;
+}
+
 #map {
+  height: 100vh;
+  margin-right: 0;
+}
+
+#sidebar {
+  background-color: #AC2189;
   height: 100vh;
 }
