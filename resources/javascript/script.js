@@ -189,7 +189,8 @@ let heatmap_layer = null;
 function drawPollutionHeatMap(map, markers) {
     removePollutionHeatMap()
     const pollution_sensors = getSensorsOfType(sensors, 'pollution');
-    if (!pollution_sensors || pollution_sensors.length == 0) {
+    console.log(pollution_sensors);
+    if (pollution_sensors && pollution_sensors.length !== 0) {
         heatmap_layer = makeHeatMap(pollution_sensors);
         mymap.addLayer(heatmap_layer);
     }
