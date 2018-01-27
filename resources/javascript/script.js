@@ -1,6 +1,11 @@
 var sensorTypes = []
 
-var mymap = L.map('map').setView([56.835, 60.612], 13);
+var mymap = L.map('map', {
+    minZoom: 10,
+    maxZoom: 15
+})
+
+mymap.setView([56.835, 60.612], 13);
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     maxZoom: 18,
@@ -37,7 +42,7 @@ mymap.whenReady(function() {
 
 function sortByDate( arr ) {
     return arr.sort(
-        function(a, b){ 
+        function(a, b){
             if (a['datetime'] < b['datetime']) {
                 return -1;
             }
@@ -45,7 +50,7 @@ function sortByDate( arr ) {
                 return 1;
             }
             return 0;
-        });   
+        });
 }
 
 function poll( sensorid, graph ) {
@@ -59,8 +64,11 @@ function poll( sensorid, graph ) {
     if (graph && (graph.data.labels[graph.data.labels.length-1] < label)) {
       graph.data.labels.push(label);
       graph.data.datasets[0].data.push(point);
-      graph.data.labels.shift();
-      graph.data.datasets[0].data.shift();
+
+      if (graph.data.datasets[0].data.length > 10) {
+          graph.data.labels.shift();
+          graph.data.datasets[0].data.shift();
+      }
       graph.update();
     }
     pollTimer = setTimeout(function() {
@@ -175,11 +183,11 @@ function makeHeatMap(points) {
 
     for (const point of points){
         if (point['current_value']) {
-            heatmap_points.push([point['latitude'], point['longitude'], point['current_value']['value']/(max_current_value+0.0001)])
+            heatmap_points.push([point['latitude'], point['longitude'], point['current_value']['value']/(0.05*max_current_value+0.0001)])
         }
     }
-
-    const heat = L.heatLayer(heatmap_points, {radius: 150, blur:10})
+    console.log(heatmap_points)
+    const heat = L.heatLayer(heatmap_points, {radius: 150, blur: 50, max: 1.5})
     return heat;
 }
 
@@ -197,7 +205,8 @@ let heatmap_layer = null;
 function drawPollutionHeatMap(map, markers) {
     removePollutionHeatMap()
     const pollution_sensors = getSensorsOfType(sensors, 'pollution');
-    if (!pollution_sensors || pollution_sensors.length == 0) {
+    console.log(pollution_sensors);
+    if (pollution_sensors && pollution_sensors.length !== 0) {
         heatmap_layer = makeHeatMap(pollution_sensors);
         mymap.addLayer(heatmap_layer);
     }
