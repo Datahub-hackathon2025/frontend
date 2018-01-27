@@ -75,6 +75,7 @@ function renderChart( sensorid, name ) {
   }});
 }
 
+var sensors = []
 var markers = []
 function getSensors(elem) {
   if (elem.checked) {
@@ -85,7 +86,7 @@ function getSensors(elem) {
   }
   if (sensorTypes.length > 0) {
     $.get({url:"/api/sensors/", data:"types="+sensorTypes, success:function( data ) {
-      var sensors = $.map(data, function(el) {return el});
+      sensors = $.map(data, function(el) {return el});
       var sensorsLen = sensors.length;
       for (var i = 0; i < markers.length; i++) {
         markers[i].remove();
@@ -109,4 +110,57 @@ function getSensors(elem) {
       markers[i].remove();
     }
   }
+}
+
+function makeHeatMap(points) {
+    const heatmap_points = [];
+    let max_current_value = points[0]['current_value']['value'];
+
+    for (const point of points){
+        if (point['current_value']) { 
+            max_current_value = Math.max(point['current_value']['value'], max_current_value)
+        }
+    }
+
+    for (const point of points){
+        if (point['current_value']) { 
+            heatmap_points.push([point['latitude'], point['longitude'], point['current_value']['value']/(max_current_value+0.0001)])
+        }
+    }
+
+    const heat = L.heatLayer(heatmap_points, {radius: 150, blur:10})
+    return heat;
+}
+
+function getSensorsOfType(sensors, type){
+    const filtered = [];
+    for (const point of sensors){
+        if (point['sensor_type'] === type){
+            filtered.push(point)
+        } 
+    }
+    return filtered;
+}
+
+let heatmap_layer = null;
+function drawPollutionHeatMap(map, markers) {
+    removePollutionHeatMap()
+    const pollution_sensors = getSensorsOfType(sensors, 'pollution');
+    heatmap_layer = makeHeatMap(pollution_sensors);
+    mymap.addLayer(heatmap_layer);
+}
+
+function removePollutionHeatMap() {
+    if (heatmap_layer){
+        mymap.removeLayer(heatmap_layer);
+        heatmap_layer = null;
+    }
+}
+
+function togglePollutionMap() {
+    if (heatmap_layer) {
+        removePollutionHeatMap();
+    } else {
+        drawPollutionHeatMap();
+    }
 }
