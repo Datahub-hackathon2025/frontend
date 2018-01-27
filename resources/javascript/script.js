@@ -42,9 +42,11 @@ for (var i=0; i<checkboxes.length; i++)  {
     checkboxes[i].checked = false;
   }
 }
-var chart = {};
-
+var chart = 0;
 function renderChart( sensorid, name ) {
+  if (chart) {
+    chart.destroy();
+  }
   var ctx = document.getElementById("chart").getContext('2d');
   $.get({url:"/api/points/", data:("sensor="+sensorid), success:function( data ) {
     var points = [];
@@ -54,7 +56,6 @@ function renderChart( sensorid, name ) {
       points.push(data[i]["value"]);
       labels.push(data[i]["datetime"].slice(11,19));
     }
-    chart.destroy();
     chart = new Chart(ctx, {
       type: 'line',
       // The data for our dataset
