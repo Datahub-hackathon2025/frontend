@@ -52,13 +52,13 @@ function getSensors(elem) {
     sensorTypes.splice(index, 1);
   }
   if (sensorTypes.length > 0) {
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].remove();
-    }
-    markers = [];
     $.get({url:"/api/sensors/", data:"types="+sensorTypes, success:function( data ) {
       var sensors = $.map(data, function(el) {return el});
       var sensorsLen = sensors.length;
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].remove();
+      }
+      markers = [];
       for (var i = 0; i < sensorsLen; i++) {
         var sensor = sensors[i];
         var marker = L.marker([sensor["latitude"], sensor["longitude"]]).addTo(mymap).setIcon(icons[sensor["sensor_type"]]);
