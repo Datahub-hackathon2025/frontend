@@ -1,21 +1,22 @@
+
 h1 {
   color: white;
-  zfont-family: 'Alegreya', serif;
+  font-family: 'Alegreya', serif;
   font-size: 3rem;
   margin-top: 0.25em;
 }
 
 h2 {
   color: white;
-  zfont-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.5rem;
   margin: 0.25em 0;
   font-weight: 600;
 }
 
 li {
-  zcolor: black;
-  zfont-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  font-family: 'Roboto', sans-serif;
   font-size: 1rem;
   margin-top: 0.2rem;
   padding: 0.2rem 0;
@@ -33,6 +34,11 @@ label {
 
 input[type="checkbox"] {
     margin:0;
+}
+
+.well {
+    border: none;
+    background: #404e7a;
 }
 
 #main {
